@@ -36,7 +36,7 @@ def send_discord_notification(username, action, model_id, avatar_url=None):
     embed = {
         "title": f"Download completed for {username}",
         "description": f"**Action:** {action}\n**Model ID:** {model_id}",
-        "color": 0x2ECC71,  # green
+        "color": 0xFF69B4,  # hot pink
     }
 
     if avatar_url:
