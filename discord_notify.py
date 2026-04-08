@@ -56,11 +56,10 @@ def send_discord_notification(username, action, model_id, avatar_url=None):
     )
 
     try:
-        with urllib.request.urlopen(req) as resp:
+        with urllib.request.urlopen(req, timeout=10) as resp:
             print(f"Discord notification sent for {username} (HTTP {resp.status})")
     except Exception as e:
         print(f"Failed to send Discord notification: {e}", file=sys.stderr)
-        sys.exit(1)
 
 def main():
     raw = sys.stdin.read()

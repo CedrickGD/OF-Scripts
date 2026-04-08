@@ -91,11 +91,10 @@ def main():
     )
 
     try:
-        with urllib.request.urlopen(req) as resp:
+        with urllib.request.urlopen(req, timeout=10) as resp:
             print(f"Discord summary sent (HTTP {resp.status})")
     except Exception as e:
         print(f"Failed to send Discord summary: {e}", file=sys.stderr)
-        sys.exit(1)
 
 if __name__ == "__main__":
     main()
