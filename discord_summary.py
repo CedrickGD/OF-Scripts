@@ -87,7 +87,7 @@ def main():
     req = urllib.request.Request(
         webhook_url,
         data=req_data,
-        headers={"Content-Type": "application/json"},
+        headers={"Content-Type": "application/json", "User-Agent": "OF-Scraper/1.0"},
         method="POST",
     )
 

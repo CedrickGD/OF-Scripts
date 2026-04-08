@@ -51,7 +51,7 @@ def send_discord_notification(username, action, model_id, avatar_url=None):
     req = urllib.request.Request(
         webhook_url,
         data=data,
-        headers={"Content-Type": "application/json"},
+        headers={"Content-Type": "application/json", "User-Agent": "OF-Scraper/1.0"},
         method="POST",
     )
 
