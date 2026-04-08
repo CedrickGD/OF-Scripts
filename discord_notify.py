@@ -2,10 +2,15 @@ import json
 import sys
 import urllib.request
 
-# Discord webhook URL - reads from ofscraper config
+# --- Custom fallback webhook URL (set this to override the ofscraper config) ---
+WEBHOOK_URL = ""
+
+# Path to ofscraper config (used when WEBHOOK_URL is empty)
 CONFIG_PATH = r"C:\Users\cedri\.config\ofscraper\config.json"
 
 def get_webhook_url():
+    if WEBHOOK_URL:
+        return WEBHOOK_URL
     with open(CONFIG_PATH, "r", encoding="utf-8") as f:
         config = json.load(f)
     return config.get("discord", "")
