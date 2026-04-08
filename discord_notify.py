@@ -27,29 +27,27 @@ def get_webhook_url():
         config = json.load(f)
     return config.get("discord", "")
 
-def send_discord_notification(username, userdata, action, model_id, avatar_url=None):
+def send_discord_notification(username, userdata, action, model_id, avatar_url=None, media=None, posts=None):
     webhook_url = get_webhook_url()
     if not webhook_url:
         print("No Discord webhook URL configured in config.json", file=sys.stderr)
         sys.exit(1)
 
-    name = userdata.get("name") or username
-    join_date = userdata.get("joinDate")
-    photos = userdata.get("photosCount", 0)
-    videos = userdata.get("videosCount", 0)
-    posts = userdata.get("postsCount", 0)
-    total = userdata.get("mediasCount", 0)
+    name = userdata.get("displayName") or userdata.get("name") or username
+    last_seen = userdata.get("lastSeen")
 
-    desc = f"**Username:** {username}"
-    if join_date:
-        desc += f"\n**Joined:** {join_date[:10]}"
-    desc += f"\n\n**Photos:** {photos} | **Videos:** {videos}"
-    desc += f"\n**Posts:** {posts} | **Total Media:** {total}"
+    media_count = len(media) if media else 0
+    post_count = len(posts) if posts else 0
+
+    desc = f"**Username:** {username}\n**Model ID:** {model_id}"
+    if last_seen:
+        desc += f"\n**Last Seen:** {last_seen[:10]}"
+    desc += f"\n\n**Downloaded:** {media_count} files from {post_count} posts"
 
     embed = {
-        "title": f"{name}",
+        "title": name,
         "description": desc,
-        "color": 0xFF69B4,  # hot pink
+        "color": 0xCE466B,
     }
 
     if avatar_url:
@@ -90,8 +88,10 @@ def main():
     if not isinstance(userdata, dict):
         userdata = {}
     avatar_url = userdata.get("avatar")
+    media = data.get("media") or []
+    posts = data.get("posts") or []
 
-    send_discord_notification(username, userdata, action, model_id, avatar_url)
+    send_discord_notification(username, userdata, action, model_id, avatar_url, media, posts)
 
 if __name__ == "__main__":
     main()
