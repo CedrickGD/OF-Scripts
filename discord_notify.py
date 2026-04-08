@@ -27,18 +27,27 @@ def get_webhook_url():
         config = json.load(f)
     return config.get("discord", "")
 
-def send_discord_notification(username, action, model_id, avatar_url=None, join_date=None):
+def send_discord_notification(username, userdata, action, model_id, avatar_url=None):
     webhook_url = get_webhook_url()
     if not webhook_url:
         print("No Discord webhook URL configured in config.json", file=sys.stderr)
         sys.exit(1)
 
-    desc = f"**Action:** {action}\n**Model ID:** {model_id}"
+    name = userdata.get("name") or username
+    join_date = userdata.get("joinDate")
+    photos = userdata.get("photosCount", 0)
+    videos = userdata.get("videosCount", 0)
+    posts = userdata.get("postsCount", 0)
+    total = userdata.get("mediasCount", 0)
+
+    desc = f"**Username:** {username}"
     if join_date:
         desc += f"\n**Joined:** {join_date[:10]}"
+    desc += f"\n\n**Photos:** {photos} | **Videos:** {videos}"
+    desc += f"\n**Posts:** {posts} | **Total Media:** {total}"
 
     embed = {
-        "title": f"Download completed for {username}",
+        "title": f"{name}",
         "description": desc,
         "color": 0xFF69B4,  # hot pink
     }
@@ -78,10 +87,11 @@ def main():
     model_id = data.get("model_id", "N/A")
 
     userdata = data.get("userdata") or {}
-    avatar_url = userdata.get("avatar") if isinstance(userdata, dict) else None
-    join_date = userdata.get("joinDate") if isinstance(userdata, dict) else None
+    if not isinstance(userdata, dict):
+        userdata = {}
+    avatar_url = userdata.get("avatar")
 
-    send_discord_notification(username, action, model_id, avatar_url, join_date)
+    send_discord_notification(username, userdata, action, model_id, avatar_url)
 
 if __name__ == "__main__":
     main()
