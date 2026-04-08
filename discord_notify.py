@@ -1,16 +1,28 @@
 import json
+import os
 import sys
 import urllib.request
 
-# --- Custom fallback webhook URL (set this to override the ofscraper config) ---
-WEBHOOK_URL = ""
-
-# Path to ofscraper config (used when WEBHOOK_URL is empty)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_PATH = r"C:\Users\cedri\.config\ofscraper\config.json"
 
+def load_env():
+    """Load .env file from the same folder as this script."""
+    env_path = os.path.join(SCRIPT_DIR, ".env")
+    if os.path.exists(env_path):
+        with open(env_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, value = line.split("=", 1)
+                os.environ.setdefault(key.strip(), value.strip())
+
 def get_webhook_url():
-    if WEBHOOK_URL:
-        return WEBHOOK_URL
+    load_env()
+    url = os.environ.get("DISCORD_WEBHOOK_URL", "")
+    if url:
+        return url
     with open(CONFIG_PATH, "r", encoding="utf-8") as f:
         config = json.load(f)
     return config.get("discord", "")
