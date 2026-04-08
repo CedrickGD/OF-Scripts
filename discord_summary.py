@@ -41,6 +41,7 @@ def build_field(name, processed, unprocessed):
     return {"name": name, "value": value, "inline": False}
 
 def main():
+    sys.stdin.reconfigure(encoding="utf-8", errors="replace")
     raw = sys.stdin.read()
     if not raw.strip():
         print("No input received on stdin", file=sys.stderr)

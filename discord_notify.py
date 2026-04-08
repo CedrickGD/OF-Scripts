@@ -62,6 +62,7 @@ def send_discord_notification(username, action, model_id, avatar_url=None):
         print(f"Failed to send Discord notification: {e}", file=sys.stderr)
 
 def main():
+    sys.stdin.reconfigure(encoding="utf-8", errors="replace")
     raw = sys.stdin.read()
     if not raw.strip():
         print("No input received on stdin", file=sys.stderr)
